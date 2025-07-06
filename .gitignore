@@ -1,0 +1,7 @@
+*.log
+*.bak*
+*.orig*
+*.png
+.*/
+Makefile
+vendor/
