@@ -18,13 +18,11 @@ const appName = "obsolete-packages"
 var (
 	version, gitCommit string // -ldflags -X main.version=v0.0.0 -X main.gitCommit=[[:xdigit:]] -X main.makeBin=/usr/bin/make
 
-	helpFlag    bool
-	verboseFlag bool
-	versionFlag bool
-
 	makeBin = "make"
 )
 
+// readStdout runs the specified command with arguments and captures its standard output.
+// It returns the combined output as a single string (without newlines) and any error encountered.
 func readStdout(cmdPath string, args ...string) (string, error) {
 	var output bytes.Buffer
 
@@ -56,13 +54,16 @@ func readStdout(cmdPath string, args ...string) (string, error) {
 }
 
 func main() {
+	var helpFlag, verboseFlag, versionFlag, deleteFlag bool
+
 	flag.BoolVar(&helpFlag, "help", false, "Display help message")
 	flag.BoolVar(&versionFlag, "version", false, "Show version information")
 	flag.BoolVar(&verboseFlag, "verbose", false, "Enable verbose output")
+	flag.BoolVar(&deleteFlag, "delete", false, "Delete obsolete packages")
 	flag.Parse()
 
 	if helpFlag {
-		fmt.Fprintln(os.Stderr, "Usage: "+appName+" [-help] [-version] [-verbose] [packages_directories]")
+		fmt.Fprintln(os.Stderr, "Usage: "+appName+" [-help] [-version] [-verbose] [-delete] [packages_directories]")
 		os.Exit(0)
 	}
 
@@ -71,7 +72,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	args, data := flag.Args(), map[string]*[]VersionType{}
+	args, data, err := flag.Args(), map[string]*[]VersionType{}, error(nil)
 	if len(args) < 1 {
 		rootDir, err := ut.RootDirectory()
 		ut.IsErr(err, 201, "ut.RootDirectory()")
@@ -86,7 +87,7 @@ func main() {
 	}
 
 	for i := 0; i < len(args); i++ {
-		err := filepath.Walk(args[i], func(path string, info os.FileInfo, err error) error {
+		err = filepath.Walk(args[i], func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
@@ -115,7 +116,13 @@ func main() {
 		if vlen := len(versions); vlen > 1 {
 			slices.SortFunc(versions, CompareVersionDesc)
 			for i := 1; i < vlen; i++ {
-				fmt.Println(versions[i].Path)
+				if deleteFlag {
+					if err = os.Remove(versions[i].Path); err != nil {
+						fmt.Fprintf(os.Stderr, "%s: %v\n", versions[i].Path, err)
+					}
+				} else {
+					fmt.Println(versions[i].Path)
+				}
 			}
 		}
 	}
