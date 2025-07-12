@@ -116,12 +116,14 @@ func main() {
 		if vlen := len(versions); vlen > 1 {
 			slices.SortFunc(versions, CompareVersionDesc)
 			for i := 1; i < vlen; i++ {
-				if deleteFlag {
-					if err = os.Remove(versions[i].Path); err != nil {
-						fmt.Fprintf(os.Stderr, "%s: %v\n", versions[i].Path, err)
+				if path := versions[i].Path; deleteFlag {
+					if err = os.Remove(path); err != nil {
+						fmt.Fprintf(os.Stderr, "%s: %v\n", path, err)
+					} else if verboseFlag {
+						fmt.Println(path)
 					}
 				} else {
-					fmt.Println(versions[i].Path)
+					fmt.Println(path)
 				}
 			}
 		}
