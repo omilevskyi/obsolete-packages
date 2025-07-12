@@ -22,7 +22,7 @@ repos:
       - id: golangci-lint
       - id: go-mod-tidy
       - id: go-unit-tests
-      # - id: go-build
+      - id: go-build
 
   - repo: https://github.com/DavidAnson/markdownlint-cli2
     rev: v0.18.1
