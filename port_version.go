@@ -32,10 +32,10 @@ func intSuffix(s string, sep byte) (int, string) {
 	return v, s
 }
 
-// KeyAndVersion parses a FreeBSD-style port version string into VersionType.
+// keyAndVersion parses a FreeBSD-style port version string into VersionType.
 // Example input: "/path/some-pkg-name-1.2.3_4,5.pkg";
 // returns: "some-pkg-name", {"/path/some-pkg-name-1.2.3_4,5.pkg", []{"1", "2", "3"}, 4, 5}
-func KeyAndVersion(path string) (string, *VersionType) {
+func keyAndVersion(path string) (string, *VersionType) {
 	s := filepath.Base(path)
 	// Remove file extension if exists (e.g., ".pkg")
 	for i, isAllDigits := len(s)-1, true; 0 <= i && s[i] != ',' && s[i] != '_'; i-- {
@@ -98,8 +98,9 @@ func KeyAndVersion(path string) (string, *VersionType) {
 	}
 }
 
-// VersionsContain -
-func VersionsContain(s []VersionType, path string) bool {
+// versionsContain checks whether a VersionType slice contains an entry with the specified path.
+// Returns true if a match is found, otherwise false.
+func versionsContain(s []VersionType, path string) bool {
 	for i := 0; i < len(s); i++ {
 		if s[i].Path == path {
 			return true
@@ -108,8 +109,10 @@ func VersionsContain(s []VersionType, path string) bool {
 	return false
 }
 
-// CompareVersionDesc -
-func CompareVersionDesc(a, b VersionType) int {
+// compareVersionDesc compares two VersionType values in descending order.
+// It prioritizes PortEpoch, then compares PortVersion segments numerically if possible,
+// and finally compares PortRevision. Returns 1 if 'a' is older than 'b', -1 if newer, 0 if equal.
+func compareVersionDesc(a, b VersionType) int {
 	// Compare epoch
 	if a.PortEpoch != b.PortEpoch {
 		return cmp.Compare(b.PortEpoch, a.PortEpoch)
