@@ -236,7 +236,7 @@ func TestKeyAndVersion(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			key, result := KeyAndVersion(tt.input)
+			key, result := keyAndVersion(tt.input)
 
 			if key != tt.expectedKey {
 				t.Errorf("KeyAndVersion(%q) key = %q; want %q", tt.input, key, tt.expectedKey)
