@@ -4,4 +4,6 @@
 *.png
 .*/
 Makefile
+Makefile.local
+obsolete-packages
 vendor/

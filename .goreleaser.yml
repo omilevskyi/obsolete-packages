@@ -1,4 +1,6 @@
 ---
+version: 2
+
 # https://goreleaser.com/customization/project/
 project_name: obsolete-packages
 
@@ -32,12 +34,6 @@ archives:
     strip_binary_directory: true
     files: []
 
-# https://goreleaser.com/customization/checksum/
-checksum:
-  name_template: "{{ .ProjectName }}_{{ .Version }}_SHA256SUMS"
-  algorithm: sha256
-  disable: true
-
 # https://goreleaser.com/customization/changelog/
 changelog:
   sort: asc
@@ -45,10 +41,35 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
+      - "^ci:"
       - Merge pull request
       - Merge branch
+
+# https://goreleaser.com/customization/checksum/
+checksum:
+  # algorithm: sha256 # default
+  name_template: "{{ .ProjectName }}_{{ .Version }}.sha256"
+
+# https://goreleaser.com/customization/sign/#with-cosign
+signs:
+  - cmd: cosign
+    artifacts: checksum
+    certificate: "${artifact}.pem"
+    signature: "${artifact}.sig"
+    args:
+      - sign-blob
+      - --yes
+      - --output-certificate=${certificate}
+      - --output-signature=${signature}
+      - ${artifact}
 
 # https://goreleaser.com/customization/release/
 release:
   # draft: true # If set to true, will not auto-publish the release
-  replace_existing_draft: true
+  use_existing_draft: true
+  replace_existing_artifacts: true
+  mode: replace
+  extra_files:
+    - glob: dist/{{ .ProjectName }}_{{ .Version }}.sha256
+    - glob: dist/{{ .ProjectName }}_{{ .Version }}.sha256.sig
+    - glob: dist/{{ .ProjectName }}_{{ .Version }}.sha256.pem

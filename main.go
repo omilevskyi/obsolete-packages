@@ -80,21 +80,22 @@ func main() {
 		portsDir, err := readStdout(makeBin, "-C", rootDir, "-V", "PORTSDIR")
 		ut.IsErr(err, 202, "readStdout()")
 
-		packagesDir, err := readStdout(makeBin, "-C", filepath.Join(portsDir, "ports-mgmt/pkg"), "-V", "PKGREPOSITORY")
+		packagesDir, err := readStdout(makeBin, "-C", filepath.Join(portsDir, "ports-mgmt", "pkg"), "-V", "PKGREPOSITORY")
 		ut.IsErr(err, 203, "readStdout()")
 
 		args = []string{packagesDir}
 	}
 
+	// Recursively walks through each directory provided in args
 	for i := 0; i < len(args); i++ {
 		err = filepath.Walk(args[i], func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
 			if info.Mode().IsRegular() {
-				if k, ver := KeyAndVersion(path); k != "" {
+				if k, ver := keyAndVersion(path); k != "" {
 					if versions, ok := data[k]; ok {
-						if !VersionsContain(*versions, ver.Path) {
+						if !versionsContain(*versions, ver.Path) {
 							*versions = append(*versions, *ver)
 						}
 					} else {
@@ -111,10 +112,11 @@ func main() {
 		}
 	}
 
+	// Iterates over all version groups sorted by key, and does the job aimed for.
 	for _, k := range ut.Arrange(ut.Keys(data)) {
 		versions := *data[k]
 		if vlen := len(versions); vlen > 1 {
-			slices.SortFunc(versions, CompareVersionDesc)
+			slices.SortFunc(versions, compareVersionDesc)
 			for i := 1; i < vlen; i++ {
 				if path := versions[i].Path; deleteFlag {
 					if err = os.Remove(path); err != nil {
