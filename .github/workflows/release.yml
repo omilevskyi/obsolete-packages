@@ -46,7 +46,7 @@ jobs:
           git push --force origin 'HEAD:refs/tags/v${{ steps.version.outputs.next }}'
       - name: Setup Go
         if: steps.version.outputs.next != ''
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version-file: "go.mod"
           cache-dependency-path: "go.sum"
