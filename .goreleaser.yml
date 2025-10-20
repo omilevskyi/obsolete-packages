@@ -8,6 +8,7 @@ builds:
     binary: ".build/{{ .ProjectName }}"
     env:
       - CGO_ENABLED=0
+      - GOEXPERIMENT=greenteagc
     mod_timestamp: "{{ .CommitTimestamp }}" # https://goreleaser.com/customization/templates/
     flags:
       - -trimpath
@@ -34,9 +35,8 @@ archives:
 
 # https://goreleaser.com/customization/checksum/
 checksum:
-  name_template: "{{ .ProjectName }}_{{ .Version }}_SHA256SUMS"
-  algorithm: sha256
-  disable: true
+  name_template: "{{ .ProjectName }}_{{ .Version }}.sha256"
+  # algorithm: sha256 # default
 
 # https://goreleaser.com/customization/changelog/
 changelog:
@@ -45,6 +45,7 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
+      - "^ci:"
       - Merge pull request
       - Merge branch
 
@@ -52,3 +53,17 @@ changelog:
 release:
   # draft: true # If set to true, will not auto-publish the release
   replace_existing_draft: true
+
+# https://goreleaser.com/customization/sign/
+signs:
+  - cmd: cosign
+    signature: "${artifact}.sig"
+    certificate: "${artifact}.pem"
+    args:
+      - "sign-blob"
+      - "--oidc-issuer=https://token.actions.githubusercontent.com"
+      - "--output-certificate=${certificate}"
+      - "--output-signature=${signature}"
+      - "${artifact}"
+      - "--yes"
+    artifacts: checksum

@@ -6,24 +6,22 @@ on:
 
 jobs:
   update-modules:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # 5.0.0
         with:
           fetch-depth: 1
           show-progress: "false"
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # 6.0.0
         with:
           go-version-file: "go.mod"
           cache-dependency-path: "go.sum"
           check-latest: true
           cache: true
-      - name: go get -u=patch
-        run: go get -u=patch
-      - name: go mod tidy
-        run: go mod tidy
+      - run: go get -u=patch
+      - run: go mod tidy
       - name: Build binary
         run: |
           env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 \
@@ -32,20 +30,13 @@ jobs:
               -ldflags "-s -w -extldflags -static" \
               -tags 'static_build' \
               -o bootstrap
-      - name: Run tests
-        run: go test -v ./...
-      - name: Setup git config
-        run: |
-          git config user.email 'github@github.com'
-          git config user.name 'GitHub Build'
-      - name: git checkout -b
-        run: git checkout -b fix/${{ github.run_number }}
-      - name: git commit
-        run: |
+      - run: go test -v ./...
+      - run: git config user.email 'github@github.com'
+      - run: git config user.name 'GitHub Build'
+      - run: git checkout -b fix/${{ github.run_number }}
+      - run: |
           git commit --all --message 'fix: update module versions ${{ github.run_number }}'
-      - name: git push
-        run: git push --set-upstream origin $(git branch --show-current)
-      - name: Create a PR
-        run: gh pr create --fill
+      - run: git push --set-upstream origin $(git branch --show-current)
+      - run: gh pr create --fill
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
