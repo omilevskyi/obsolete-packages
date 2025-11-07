@@ -1,4 +1,6 @@
 ---
+version: 2
+
 # https://goreleaser.com/customization/project/
 project_name: obsolete-packages
 
@@ -59,10 +61,9 @@ signs:
     signature: "${artifact}.sig"
     certificate: "${artifact}.pem"
     args:
-      - "sign-blob"
-      - "--oidc-issuer=https://token.actions.githubusercontent.com"
-      - "--output-certificate=${certificate}"
-      - "--output-signature=${signature}"
-      - "${artifact}"
-      - "--yes"
-    artifacts: checksum
+      - sign-blob
+      - --output-certificate=${certificate}
+      - --output-signature=${signature}
+      - --yes
+      - ${artifact}
+    artifacts: "{{ .ProjectName }}_{{ .Version }}.sha256"
