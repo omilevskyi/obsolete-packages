@@ -58,8 +58,8 @@ signs:
     certificate: "${artifact}.pem"
     args:
       - "sign-blob"
-      - "--key=github"
       - "--yes"
+      - "--bundle=${artifact}.sigstore.json"
       - "${artifact}"
       - "--output-certificate=${certificate}"
       - "--output-signature=${signature}"
@@ -73,3 +73,4 @@ release:
     - glob: "dist/{{ .ProjectName }}_{{ .Version }}.sha256"
     - glob: "dist/{{ .ProjectName }}_{{ .Version }}.sha256.sig"
     - glob: "dist/{{ .ProjectName }}_{{ .Version }}.sha256.pem"
+    - glob: "dist/{{ .ProjectName }}_{{ .Version }}.sigstore.json"
