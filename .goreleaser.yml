@@ -57,7 +57,7 @@ release:
   extra_files:
     - glob: "{{ .ProjectName }}_{{ .Version }}.sha256"
 
-# https://goreleaser.com/customization/sign/
+# https://goreleaser.com/customization/sign/#with-cosign
 signs:
   - cmd: cosign
     artifacts: checksum
@@ -65,8 +65,7 @@ signs:
     certificate: "${artifact}.pem"
     args:
       - "sign-blob"
-      - "--key=github"
+      - "--yes"
+      - "${artifact}"
       - "--output-certificate=${certificate}"
       - "--output-signature=${signature}"
-      - "${artifact}"
-      - "--yes"
