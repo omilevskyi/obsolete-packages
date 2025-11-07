@@ -47,8 +47,8 @@ changelog:
 
 # https://goreleaser.com/customization/checksum/
 checksum:
-  name_template: "{{ .ProjectName }}_{{ .Version }}.sha256"
   # algorithm: sha256 # default
+  name_template: "{{ .ProjectName }}_{{ .Version }}.sha256"
 
 # https://goreleaser.com/customization/sign/#with-cosign
 signs:
@@ -65,7 +65,6 @@ signs:
 
 # https://goreleaser.com/customization/release/
 release:
-  # draft: true # If set to true, will not auto-publish the release
   use_existing_draft: true
   replace_existing_artifacts: true
   mode: replace
