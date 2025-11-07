@@ -69,4 +69,4 @@ signs:
       - --output-signature=${signature}
       - --yes
       - ${artifact}
-    artifacts: "{{ .ProjectName }}_{{ .Version }}.sha256"
+    artifacts: checksum
