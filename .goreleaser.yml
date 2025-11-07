@@ -54,8 +54,12 @@ changelog:
 release:
   # draft: true # If set to true, will not auto-publish the release
   replace_existing_draft: true
-  extra_files:
-    - glob: "{{ .ProjectName }}_{{ .Version }}.sha256"
+  github:
+    files:
+      - "{{ .ProjectName }}_{{ .Version }}.sha256"
+      - "dist/{{ .ProjectName }}_{{ .Version }}.sha256"
+      - "dist/{{ .ProjectName }}_{{ .Version }}.sha256.sig"
+      - "dist/{{ .ProjectName }}_{{ .Version }}.sha256.pem"
 
 # https://goreleaser.com/customization/sign/#with-cosign
 signs:
