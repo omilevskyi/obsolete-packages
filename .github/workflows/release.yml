@@ -40,13 +40,6 @@ jobs:
           next_version=$(curl --silent https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver |
             bash -s bump ${version_bump} ${recent_version:-v0.0.0})
           echo "next=${next_version}" >>${GITHUB_OUTPUT}
-      - name: Push next version
-        if: steps.version.outputs.next != ''
-        run: |
-          git config user.email 'GitHub Build'
-          git config user.name 'github@ei.aero'
-          git tag --force --annotate 'v${{ steps.version.outputs.next }}' --message 'v${{ steps.version.outputs.next }}'
-          git push --force origin 'HEAD:refs/tags/v${{ steps.version.outputs.next }}'
       - name: Setup Go
         if: steps.version.outputs.next != ''
         uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # 6.0.0
@@ -62,6 +55,13 @@ jobs:
         uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # 4.0.0
         with:
           cosign-release: v3.0.2
+      - name: Push next version
+        if: steps.version.outputs.next != ''
+        run: |
+          git config user.email 'GitHub Build'
+          git config user.name 'github@ei.aero'
+          git tag --force --annotate 'v${{ steps.version.outputs.next }}' --message 'v${{ steps.version.outputs.next }}'
+          git push --force origin 'HEAD:refs/tags/v${{ steps.version.outputs.next }}'
       - name: Run GoReleaser
         if: steps.version.outputs.next != ''
         uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a # 6.4.0

@@ -54,6 +54,8 @@ changelog:
 release:
   # draft: true # If set to true, will not auto-publish the release
   replace_existing_draft: true
+  extra_files:
+    - glob: "{{ .ProjectName }}_{{ .Version }}.sha256"
 
 # https://goreleaser.com/customization/sign/
 signs:
@@ -62,6 +64,7 @@ signs:
     certificate: "${artifact}.pem"
     args:
       - sign-blob
+      - --oidc-issuer=https://token.actions.githubusercontent.com
       - --output-certificate=${certificate}
       - --output-signature=${signature}
       - --yes
