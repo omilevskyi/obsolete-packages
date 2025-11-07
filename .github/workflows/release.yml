@@ -54,7 +54,7 @@ jobs:
       - name: Install Cosign
         uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # 4.0.0
         with:
-          cosign-release: v3.0.2
+          cosign-release: v2.6.1
       - name: Push next version
         if: steps.version.outputs.next != ''
         run: |
@@ -73,3 +73,4 @@ jobs:
         env:
           # GitHub sets this automatically
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COSIGN_EXPERIMENTAL: 1
