@@ -56,20 +56,20 @@ signs:
     artifacts: checksum
     certificate: "${artifact}.pem"
     signature: "${artifact}.sig"
-    output: true
     args:
-      - "sign-blob"
-      - "--output-certificate=${certificate}"
-      - "--output-signature=${signature}"
-      - "${artifact}"
-#      - "--yes"
+      - sign-blob
+      - --output-certificate=${certificate}
+      - --output-signature=${signature}
+      - --yes
+      - ${artifact}
 
 # https://goreleaser.com/customization/release/
 release:
+  # draft: true # If set to true, will not auto-publish the release
   use_existing_draft: true
   replace_existing_artifacts: true
   mode: replace
   extra_files:
-    - glob: "dist/{{ .ProjectName }}_{{ .Version }}.sha256"
-    - glob: "dist/{{ .ProjectName }}_{{ .Version }}.sha256.sig"
-    - glob: "dist/{{ .ProjectName }}_{{ .Version }}.sha256.pem"
+    - glob: dist/{{ .ProjectName }}_{{ .Version }}.sha256
+    - glob: dist/{{ .ProjectName }}_{{ .Version }}.sha256.sig
+    - glob: dist/{{ .ProjectName }}_{{ .Version }}.sha256.pem
