@@ -54,15 +54,15 @@ checksum:
 signs:
   - cmd: cosign
     artifacts: checksum
-    signature: "${artifact}.sig"
     certificate: "${artifact}.pem"
+    signature: "${artifact}.sig"
+    output: true
     args:
       - "sign-blob"
-      - "--yes"
-      - "--bundle=${artifact}.sigstore.json"
-      - "${artifact}"
       - "--output-certificate=${certificate}"
       - "--output-signature=${signature}"
+      - "${artifact}"
+#      - "--yes"
 
 # https://goreleaser.com/customization/release/
 release:
@@ -73,4 +73,3 @@ release:
     - glob: "dist/{{ .ProjectName }}_{{ .Version }}.sha256"
     - glob: "dist/{{ .ProjectName }}_{{ .Version }}.sha256.sig"
     - glob: "dist/{{ .ProjectName }}_{{ .Version }}.sha256.pem"
-    - glob: "dist/{{ .ProjectName }}_{{ .Version }}.sigstore.json"
