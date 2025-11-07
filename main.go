@@ -80,7 +80,7 @@ func main() {
 		portsDir, err := readStdout(makeBin, "-C", rootDir, "-V", "PORTSDIR")
 		ut.IsErr(err, 202, "readStdout()")
 
-		packagesDir, err := readStdout(makeBin, "-C", filepath.Join(portsDir, "ports-mgmt/pkg"), "-V", "PKGREPOSITORY")
+		packagesDir, err := readStdout(makeBin, "-C", filepath.Join(portsDir, "ports-mgmt", "pkg"), "-V", "PKGREPOSITORY")
 		ut.IsErr(err, 203, "readStdout()")
 
 		args = []string{packagesDir}
