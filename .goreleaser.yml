@@ -58,9 +58,9 @@ signs:
     signature: "${artifact}.sig"
     args:
       - sign-blob
+      - --yes
       - --output-certificate=${certificate}
       - --output-signature=${signature}
-      - --yes
       - ${artifact}
 
 # https://goreleaser.com/customization/release/
