@@ -58,6 +58,7 @@ signs:
     certificate: "${artifact}.pem"
     args:
       - "sign-blob"
+      - "--key=github"
       - "--yes"
       - "${artifact}"
       - "--output-certificate=${certificate}"
