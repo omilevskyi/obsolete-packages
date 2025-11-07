@@ -8,7 +8,6 @@ builds:
     binary: ".build/{{ .ProjectName }}"
     env:
       - CGO_ENABLED=0
-      - GOEXPERIMENT=greenteagc
     mod_timestamp: "{{ .CommitTimestamp }}" # https://goreleaser.com/customization/templates/
     flags:
       - -trimpath
