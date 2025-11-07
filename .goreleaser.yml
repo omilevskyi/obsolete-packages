@@ -34,11 +34,6 @@ archives:
     strip_binary_directory: true
     files: []
 
-# https://goreleaser.com/customization/checksum/
-checksum:
-  name_template: "{{ .ProjectName }}_{{ .Version }}.sha256"
-  # algorithm: sha256 # default
-
 # https://goreleaser.com/customization/changelog/
 changelog:
   sort: asc
@@ -50,16 +45,10 @@ changelog:
       - Merge pull request
       - Merge branch
 
-# https://goreleaser.com/customization/release/
-release:
-  # draft: true # If set to true, will not auto-publish the release
-  replace_existing_draft: true
-  github:
-    files:
-      - "{{ .ProjectName }}_{{ .Version }}.sha256"
-      - "dist/{{ .ProjectName }}_{{ .Version }}.sha256"
-      - "dist/{{ .ProjectName }}_{{ .Version }}.sha256.sig"
-      - "dist/{{ .ProjectName }}_{{ .Version }}.sha256.pem"
+# https://goreleaser.com/customization/checksum/
+checksum:
+  name_template: "{{ .ProjectName }}_{{ .Version }}.sha256"
+  # algorithm: sha256 # default
 
 # https://goreleaser.com/customization/sign/#with-cosign
 signs:
@@ -73,3 +62,12 @@ signs:
       - "${artifact}"
       - "--output-certificate=${certificate}"
       - "--output-signature=${signature}"
+
+# https://goreleaser.com/customization/release/
+release:
+  # draft: true # If set to true, will not auto-publish the release
+  replace_existing_draft: true
+  extra_files:
+    - glob: "dist/{{ .ProjectName }}_{{ .Version }}.sha256"
+    - glob: "dist/{{ .ProjectName }}_{{ .Version }}.sha256.sig"
+    - glob: "dist/{{ .ProjectName }}_{{ .Version }}.sha256.pem"
