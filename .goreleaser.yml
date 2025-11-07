@@ -64,8 +64,9 @@ signs:
     certificate: "${artifact}.pem"
     args:
       - "sign-blob"
+      - "--oidc-issuer=https://token.actions.githubusercontent.com"
       - "--output-certificate=${certificate}"
       - "--output-signature=${signature}"
-      - "--yes"
       - "${artifact}"
+      - "--yes"
     artifacts: checksum
