@@ -18,7 +18,7 @@ builds:
       - static_build
     ldflags:
       - -s -w -extldflags -static
-      - -X main.version=v{{ .Version }}
+      - -X main.version={{ .Version }}
       - -X main.gitCommit={{ .ShortCommit }}
       - -X main.makeBin=/usr/bin/make
     goos:
