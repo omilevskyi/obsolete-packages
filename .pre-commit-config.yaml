@@ -25,13 +25,13 @@ repos:
       - id: go-build
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.34.1
+    rev: 0.35.0
     hooks:
       - id: check-github-actions
       - id: check-github-workflows
 
   - repo: https://github.com/homebysix/pre-commit-macadmin
-    rev: v1.21.1
+    rev: v1.22.0
     hooks:
       - id: check-git-config-email
         args: ["--domains", "aerlingus.com"]
